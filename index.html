@@ -1,28 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html dir="rtl">
 
 <head>
     <title>الأخبار</title>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/base-min.css">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-min.css">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css ">
 </head>
 
-<body class="pushable">
-    <div class="thirteen wide column">
-        <table id="hr" class="ui compact celled definition center aligned table">
-            <tbody>
-                <script id="hr-template" type="text/x-handlebars-template">
-                    {{#unless (isHeader cells)}}
-                    <img src="{{cells.thumbnail_src}}" width="130">
-                        <a href="{{cells.url}}">{{cells.title}}</a>
-                        <!-- <p>{{cells.title}}</p>
-                        <p>{{cells.url}}</p> -->
-                        <!-- <p>{{cells.thumbnail_src}}</p> -->
-                        <p>{{cells.date}}</p>
-                        <hr>
-                    {{/unless}}
-                </script>
-            </tbody>
-        </table>
+<body>
+    <div id="hr" class="pure-g" style="margin-top: 20px;margin-left: auto!important;margin-right: auto!important; width: 712px;">
+        <script id="hr-template" type="text/x-handlebars-template">
+            {{#unless (isHeader cells)}}
+            <div class="pure-u-1" style="border-bottom: 1px solid #ddd; padding-bottom: 12px; margin: 0 0 12px">
+            <div class="pure-g">
+            <div class="pure-u-1-4" style="border-radius: 8px;">
+                <img src="{{cells.thumbnail_src}}" width="130" height="130" style="border-radius: 8px; object-fit: cover;">
+            </div>
+            <div class="pure-u-3-4">
+                <a href="{{cells.url}}" target="_blank" style="font-weight: 700; text-decoration: none; color: #444; font-size: 22px">{{cells.title}}</a>
+                <p style="color: #777; font-size: 1.3rem;">{{getDate cells.date}}</p>
+            </div>
+            </div>
+            </div>
+            {{/unless}}
+        </script>
     </div>
 </body>
 
@@ -32,37 +35,23 @@
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sheetrock/1.1.4/dist/sheetrock.min.js"></script>
 <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+<script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+<script src="https://unpkg.com/dayjs@1.8.21/locale/ar.js"></script>
+<script src="https://unpkg.com/dayjs@1.8.21/plugin/relativeTime.js"></script>
+<script>dayjs.locale('ar'); dayjs.extend(window.dayjs_plugin_relativeTime)</script>
 <script type="text/javascript">
 
-    // var mySpreadsheet = 'https://docs.google.com/spreadsheets/d/16cDoZWfC9Vck6hhVb8OG7Xu54xkoanJRWCjHUlS4HiM/edit#gid=513835448';
     var mySpreadsheet = 'https://docs.google.com/spreadsheets/d/1TllgUJgHRrXrMLOrT77sNoquly5LwD98M53LeCaqW9I/edit#gid=513835448';
 
     var columns = ['title','url','thumbnail_src','date'];
-    // var columnsNames = ['title','date'];
-
-    // var template = Handlebars.compile(document.getElementById("header-row-script").innerHTML)
-    // var context = { columns: columnsNames };
-    // var html = template(context);
-    // document.getElementById("header-row").innerHTML = html;
 
     Handlebars.registerHelper('isHeader', function (cells) {
         return cells.title == 'title';
     });
-
-    // Handlebars.registerHelper('accepted', function (text) {
-    //     return text == 'AC';
-    // });
-
-    // Handlebars.registerHelper('problemCell', function (cells) {
-    //     delete cells['Name'];
-    //     delete cells['Score'];
-    //     delete cells['Profile_Picture'];
-    //     return cells;
-    // });
-
-    // Handlebars.registerHelper('columns', function () {
-    //     return columns;
-    // });
+    
+    Handlebars.registerHelper('getDate', function (text) {
+        return dayjs(text+' UTC+00:00').fromNow();
+    });
 
     var HRTemplate = Handlebars.compile($('#hr-template').html());
 
@@ -79,8 +68,7 @@
         if (error) {
             console.log('fail');
             console.log(error);
-        }
-        else {
+        } else {
             // console.log(response);
         }
     }
