@@ -1,1 +1,89 @@
-<h1>Hello World</h1>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>الأخبار</title>
+    <meta charset="UTF-8">
+</head>
+
+<body class="pushable">
+    <div class="thirteen wide column">
+        <table id="hr" class="ui compact celled definition center aligned table">
+            <tbody>
+                <script id="hr-template" type="text/x-handlebars-template">
+                    {{#unless (isHeader cells)}}
+                    <img src="{{cells.thumbnail_src}}" width="130">
+                        <a href="{{cells.url}}">{{cells.title}}</a>
+                        <!-- <p>{{cells.title}}</p>
+                        <p>{{cells.url}}</p> -->
+                        <!-- <p>{{cells.thumbnail_src}}</p> -->
+                        <p>{{cells.date}}</p>
+                        <hr>
+                    {{/unless}}
+                </script>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+<!-- import JavaScript -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sheetrock/1.1.4/dist/sheetrock.min.js"></script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+<script type="text/javascript">
+
+    // var mySpreadsheet = 'https://docs.google.com/spreadsheets/d/16cDoZWfC9Vck6hhVb8OG7Xu54xkoanJRWCjHUlS4HiM/edit#gid=513835448';
+    var mySpreadsheet = 'https://docs.google.com/spreadsheets/d/1TllgUJgHRrXrMLOrT77sNoquly5LwD98M53LeCaqW9I/edit#gid=513835448';
+
+    var columns = ['title','url','thumbnail_src','date'];
+    // var columnsNames = ['title','date'];
+
+    // var template = Handlebars.compile(document.getElementById("header-row-script").innerHTML)
+    // var context = { columns: columnsNames };
+    // var html = template(context);
+    // document.getElementById("header-row").innerHTML = html;
+
+    Handlebars.registerHelper('isHeader', function (cells) {
+        return cells.title == 'title';
+    });
+
+    // Handlebars.registerHelper('accepted', function (text) {
+    //     return text == 'AC';
+    // });
+
+    // Handlebars.registerHelper('problemCell', function (cells) {
+    //     delete cells['Name'];
+    //     delete cells['Score'];
+    //     delete cells['Profile_Picture'];
+    //     return cells;
+    // });
+
+    // Handlebars.registerHelper('columns', function () {
+    //     return columns;
+    // });
+
+    var HRTemplate = Handlebars.compile($('#hr-template').html());
+
+    $('#hr').sheetrock({
+        url: mySpreadsheet,
+        query: "select A,B,C,D",
+        fetchSize: 30,
+        labels: columns,
+        rowTemplate: HRTemplate,
+        callback: draw
+    });
+
+    function draw(error, options, response) {
+        if (error) {
+            console.log('fail');
+            console.log(error);
+        }
+        else {
+            // console.log(response);
+        }
+    }
+</script>
+
+</html>
